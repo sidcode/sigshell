@@ -10,6 +10,7 @@
 #define CMD_LENGTH_MAX 50
 #define JOB_QUEUE_MAX 50
 
+//#defines for various process statuses
 #define RUN_FG 0
 #define RUN_BG  1
 #define STP_BG 2
@@ -18,6 +19,7 @@
 //Signal received Variable
 int sig_received = 0;
 int sig_received1 = 0;
+
 //Job Control Structure
 struct job_control
 {   
@@ -42,19 +44,19 @@ void PS()
     printf("%s@%s %s$ ",getenv("LOGNAME"),domain_name,cwd);
 }
 
-//Handlers for signals
+/*Handlers for signals*/
+
+//SIGINT handler
 void sigint_handler(int p)
 {
     sig_received = 1;
     sig_received1 = 1;
     printf("\nSIGINT received\nPress Enter to continue.\n");
-    
     fflush(stdout);
-
-
     return;
 }
 
+//SIGTSTP handler
 void sigtstp_handler(int p)
 {
     sig_received = 1;
@@ -62,7 +64,6 @@ void sigtstp_handler(int p)
     printf("\nSIGTSTP received\nPress Enter to continue.\n");
     fflush(stdout);
     return;
-
 }
 
 //Function to Print Job Structure -- JID,PID,Status
@@ -88,7 +89,7 @@ static int job_count;
 
 int main()
 { 
-    pid_t prog;//the process id for the entered command
+    pid_t prog;     //the process id for the entered command
     int status;
     
     job_count = 0;
@@ -106,8 +107,8 @@ int main()
     
     while(1)
     {
-        //Prompt String
-        PS();
+        
+        PS(); //Prompt String
 
         int cmd_type = 0; //0 for fg processes & 1 for bg processes
         int valid_process =0;
